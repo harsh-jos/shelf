@@ -28,7 +28,7 @@ export default function LoginPage() {
       <div className="rounded-[20px] bg-white border border-[var(--border)] shadow-[0_8px_32px_rgba(0,0,0,0.06)] p-7">
         <div className="size-8 rounded-[10px] bg-[#0f0f0f] flex items-center justify-center"><div className="size-3.5 rounded-[5px] bg-[#30AFFF]" /></div>
         <h1 className="mt-3 text-[22px] font-[650] tracking-[-0.02em]">Welcome back</h1>
-        <p className="text-[13px] text-[var(--muted-foreground)] mt-1">Sign in to your Shelf. Demo: <span className="px-1.5 py-0.5 rounded bg-[var(--muted)] border border-[var(--border)]">demo / demo123</span></p>
+        <p className="text-[13px] text-[var(--muted-foreground)] mt-1">Sign in to your Shelf</p>
         <form onSubmit={submit} className="mt-6 space-y-3">
           <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" className="w-full h-9 px-3 rounded-[10px] border border-[var(--border)] bg-white text-[13.5px] outline-none focus:border-[#30AFFF] focus:ring-2 focus:ring-[#30AFFF]/20" />
           <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" className="w-full h-9 px-3 rounded-[10px] border border-[var(--border)] bg-white text-[13.5px] outline-none focus:border-[#30AFFF] focus:ring-2 focus:ring-[#30AFFF]/20" />
