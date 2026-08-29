@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { getCurrentUser } from "@/lib/auth";
 import UserMenu from "@/components/UserMenu";
-import StorageBar from "@/components/StorageBar";
+import HeaderActions from "@/components/HeaderActions";
 
 export const metadata: Metadata = {
   title: "Shelf — a home for things you learn",
@@ -34,11 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
             <nav className="flex items-center gap-2 shrink-0">
               <a href="/" className="hidden sm:inline text-[13px] font-[500] px-3 py-1.5 rounded-full hover:bg-[var(--muted)] transition-colors">Library</a>
-              <button className="h-[32px] px-4 rounded-full bg-[#0f0f0f] text-white text-[13px] font-[550] tracking-[-0.01em] hover:bg-black transition-colors flex items-center gap-1.5">
-                <span className="size-4 rounded-full bg-[#30AFFF] flex items-center justify-center text-[11px] leading-none text-white">+</span>
-                New
-              </button>
-              {user && <StorageBar />}
+              <HeaderActions />
               <UserMenu username={user?.username ?? null} />
             </nav>
           </div>
