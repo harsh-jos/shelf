@@ -24,10 +24,10 @@ export default function NewArtifactModal({ open, onClose }: { open: boolean; onC
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-[560px] rounded-[20px] bg-white border border-[var(--border)] shadow-[0_24px_64px_rgba(0,0,0,0.18)] overflow-hidden max-h-[85vh] flex flex-col">
-        <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 pt-[8vh] sm:pt-4 overflow-y-auto">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-[560px] rounded-[20px] bg-white border border-[var(--border)] shadow-[0_24px_64px_rgba(0,0,0,0.18)] flex flex-col max-h-[min(85vh,720px)] overflow-hidden my-4">
+        <div className="shrink-0 px-6 py-4 border-b border-[var(--border)] flex items-center justify-between">
           <div>
             <h3 className="text-[16px] font-[650] tracking-[-0.01em]">Add to Shelf</h3>
             <p className="text-[12.5px] text-[var(--muted-foreground)]">Save beautiful artifacts via MCP — or upload manually</p>
@@ -35,7 +35,7 @@ export default function NewArtifactModal({ open, onClose }: { open: boolean; onC
           <button onClick={onClose} className="size-7 rounded-full bg-[var(--muted)] border border-[var(--border)] flex items-center justify-center text-[13px]">✕</button>
         </div>
 
-        <div className="p-6 space-y-5 overflow-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-5 overscroll-contain">
           <div className="rounded-[14px] bg-[#fcfcfa] border border-[var(--border)] p-4">
             <div className="flex items-center gap-2">
               <span className="size-6 rounded-full bg-[#30AFFF] text-white flex items-center justify-center text-[12px]">1</span>
@@ -75,7 +75,7 @@ export default function NewArtifactModal({ open, onClose }: { open: boolean; onC
           </div>
         </div>
 
-        <div className="px-6 py-3 border-t border-[var(--border)] bg-[var(--muted)]/50 flex justify-end">
+        <div className="shrink-0 px-6 py-3 border-t border-[var(--border)] bg-[var(--muted)]/50 flex justify-end">
           <button onClick={onClose} className="h-8 px-4 rounded-full bg-[#0f0f0f] text-white text-[13px] font-[500]">Got it</button>
         </div>
       </div>
