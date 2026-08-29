@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { getArtifactsForUser, getCollectionsForUser, getStorageUsage } from "@/lib/data";
 import NewCollectionButton from "@/components/NewCollectionButton";
+import UploadDropzone from "@/components/UploadDropzone";
 
 export default async function Home() {
   const user = await getCurrentUser();
@@ -142,20 +143,7 @@ export default async function Home() {
         </section>
       </div>
 
-      {/* Drop */}
-      <div className="mt-6 rounded-[16px] border border-dashed border-[var(--border)] bg-white px-5 py-4 flex flex-col md:flex-row items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="size-8 rounded-full bg-[var(--muted)] border border-[var(--border)] flex items-center justify-center">⬆</div>
-          <div>
-            <div className="text-[13px] font-[550]">Drop an artifact</div>
-            <div className="text-[12px] text-[var(--muted-foreground)]">HTML, MD or PDF — or let Claude call save_artifact()</div>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <button className="h-8 px-4 rounded-full bg-white border border-[var(--border)] text-[12.5px] font-[550] hover:bg-[var(--muted)]">Choose file</button>
-          <button className="h-8 px-4 rounded-full bg-[#0f0f0f] text-white text-[12.5px] font-[550]">Upload</button>
-        </div>
-      </div>
+      <UploadDropzone />
     </main>
   );
 }
