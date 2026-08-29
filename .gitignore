@@ -1,0 +1,33 @@
+# deps
+node_modules
+.pnpm-debug.log
+
+# next
+.next
+out
+build
+dist
+
+# env - never push real creds
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# vercel
+.vercel
+
+# mcp deps (if installed separately)
+mcp/node_modules
+
+# os
+.DS_Store
+*.log
+
+# ts
+*.tsbuildinfo
+next-env.d.ts
+
+# storage
+.vercel/blob
