@@ -24,9 +24,9 @@ export default function NewArtifactModal({ open, onClose }: { open: boolean; onC
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 pt-[8vh] sm:pt-4 overflow-y-auto">
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-[560px] rounded-[20px] bg-white border border-[var(--border)] shadow-[0_24px_64px_rgba(0,0,0,0.18)] flex flex-col max-h-[min(85vh,720px)] overflow-hidden my-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-[560px] rounded-[20px] bg-white border border-[var(--border)] shadow-[0_24px_64px_rgba(0,0,0,0.18)] flex flex-col max-h-[85vh] overflow-hidden">
         <div className="shrink-0 px-6 py-4 border-b border-[var(--border)] flex items-center justify-between">
           <div>
             <h3 className="text-[16px] font-[650] tracking-[-0.01em]">Add to Shelf</h3>
