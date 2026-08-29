@@ -50,13 +50,15 @@ export async function ensureTables() {
         blob_key text,
         is_public boolean not null default false,
         saved_from uuid references artifacts(id) on delete set null,
+        size_bytes integer not null default 0,
         created_at timestamptz default now()
       );
     `);
-    // migrate older schema: add blob_key if missing
+    // migrate older schema
     await client.query(`alter table artifacts add column if not exists blob_key text;`);
     await client.query(`alter table artifacts add column if not exists blob_url text;`);
     await client.query(`alter table artifacts add column if not exists saved_from uuid;`);
+    await client.query(`alter table artifacts add column if not exists size_bytes integer not null default 0;`);
     await client.query(`create index if not exists collections_owner_idx on collections(owner_id);`);
     await client.query(`create index if not exists artifacts_owner_idx on artifacts(owner_id);`);
     await client.query(`create index if not exists artifacts_public_idx on artifacts(is_public);`);

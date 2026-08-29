@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { getCurrentUser } from "@/lib/auth";
 import UserMenu from "@/components/UserMenu";
+import StorageBar from "@/components/StorageBar";
 
 export const metadata: Metadata = {
   title: "Shelf — a home for things you learn",
@@ -37,6 +38,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <span className="size-4 rounded-full bg-[#30AFFF] flex items-center justify-center text-[11px] leading-none text-white">+</span>
                 New
               </button>
+              {user && <StorageBar />}
               <UserMenu username={user?.username ?? null} />
             </nav>
           </div>

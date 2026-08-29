@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/auth";
-import { getArtifactsForUser, getCollectionsForUser } from "@/lib/data";
+import { getArtifactsForUser, getCollectionsForUser, getStorageUsage } from "@/lib/data";
 
 export default async function Home() {
   const user = await getCurrentUser();
@@ -7,6 +7,7 @@ export default async function Home() {
   const myCollections = user ? await getCollectionsForUser(user.id) : [];
   const loose = visible.filter((a) => a.collectionId === null);
   const recent = [...visible].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6);
+  const storage = user ? await getStorageUsage(user.id) : null;
 
   return (
     <main className="max-w-[1160px] mx-auto px-6 py-8">
@@ -17,6 +18,37 @@ export default async function Home() {
           HTML explainers, markdown essays and PDFs — saved from Claude and Codex via API or MCP, read here without clutter. The artifact is the star.
         </p>
       </div>
+
+      {storage && (
+        <div className="rounded-[16px] bg-white border border-[var(--border)] p-4 flex flex-col sm:flex-row sm:items-center gap-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline gap-2">
+              <span className="text-[13px] font-[600]">Storage</span>
+              {storage.unlimited ? (
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-[#eef6ff] border border-[#d6ebff] text-[#0a7bc2] font-[700]">UNLIMITED</span>
+              ) : (
+                <span className="text-[11px] text-[var(--muted-foreground)]">40 MB limit</span>
+              )}
+              <span className="ml-auto text-[12px] font-[500] text-[var(--muted-foreground)]">
+                {(storage.used / (1024 * 1024)).toFixed(2)} MB {storage.unlimited ? "used" : `/ 40 MB`}
+              </span>
+            </div>
+            <div className="mt-2 h-2 rounded-full bg-[var(--muted)] border border-[var(--border)] overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${storage.unlimited ? "bg-[#30AFFF]" : storage.used / (40 * 1024 * 1024) > 0.85 ? "bg-amber-500" : "bg-[#30AFFF]"}`}
+                style={{ width: `${Math.min(100, (storage.used / (40 * 1024 * 1024)) * 100)}%` }}
+              />
+            </div>
+            <div className="mt-1.5 text-[11px] text-[var(--muted-foreground)]">
+              {storage.unlimited ? "You have no limit — harsh" : `${visible.length} artifacts • ${(storage.used / 1024).toFixed(1)} KB total`}
+            </div>
+          </div>
+          <div className="hidden sm:block text-[11px] text-[var(--muted-foreground)] text-right">
+            <div>Each artifact counts</div>
+            <div>toward your 40 MB</div>
+          </div>
+        </div>
+      )}
 
       {/* Collections — only yours, like My Drive folders */}
       <section id="collections" className="mt-4">

@@ -6,6 +6,8 @@ import { getArtifactContentById } from "./blob";
 
 export type ArtifactType = "html" | "md" | "pdf";
 
+export const LIMIT_BYTES = 40 * 1024 * 1024; // 40 MB per user, harsh is unlimited
+
 export type Artifact = {
   id: string;
   title: string;
@@ -19,6 +21,7 @@ export type Artifact = {
   savedFrom?: string | null;
   blobKey?: string | null;
   blobUrl?: string | null;
+  sizeBytes?: number;
 };
 
 export type Collection = {
@@ -43,6 +46,7 @@ function rowToArtifact(row: any): Artifact {
     savedFrom: row.saved_from,
     blobKey: row.blob_key,
     blobUrl: row.blob_url,
+    sizeBytes: row.size_bytes ?? 0,
   };
 }
 
@@ -114,12 +118,22 @@ export async function setArtifactPublic(id: string, isPublic: boolean) {
   await pool.query("update artifacts set is_public = $2 where id = $1", [id, isPublic]);
 }
 
-export async function createArtifact(a: { id: string; ownerId: string; title: string; type: ArtifactType; collectionId: string | null; description: string; blobKey: string; blobUrl: string }) {
+export async function createArtifact(a: { id: string; ownerId: string; title: string; type: ArtifactType; collectionId: string | null; description: string; blobKey: string; blobUrl: string; sizeBytes?: number }) {
   await ensureTables();
   await pool.query(
-    "insert into artifacts (id, owner_id, title, type, collection_id, description, content, blob_key, blob_url, is_public, saved_from) values ($1,$2,$3,$4,$5,$6,'',$7,$8,false,null)",
-    [a.id, a.ownerId, a.title, a.type, a.collectionId, a.description, a.blobKey, a.blobUrl]
+    "insert into artifacts (id, owner_id, title, type, collection_id, description, content, blob_key, blob_url, is_public, saved_from, size_bytes) values ($1,$2,$3,$4,$5,$6,'',$7,$8,false,null,$9)",
+    [a.id, a.ownerId, a.title, a.type, a.collectionId, a.description, a.blobKey, a.blobUrl, a.sizeBytes ?? 0]
   );
+}
+
+export async function getStorageUsage(userId: string): Promise<{ used: number; limit: number; unlimited: boolean }> {
+  await ensureTables();
+  const { rows } = await pool.query("select coalesce(sum(size_bytes),0) as used from artifacts where owner_id = $1", [userId]);
+  const { rows: urows } = await pool.query("select username from users where id = $1", [userId]);
+  const username = urows[0]?.username;
+  const unlimited = username === "harsh";
+  const used = Number(rows[0].used) || 0;
+  return { used, limit: unlimited ? Infinity : LIMIT_BYTES, unlimited };
 }
 
 export async function createCollection(c: { id: string; ownerId: string; title: string; description: string; color?: string }) {

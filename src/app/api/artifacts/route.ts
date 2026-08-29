@@ -3,6 +3,12 @@ import { getCurrentUser } from "@/lib/auth";
 import { getArtifactsForUser, createArtifact } from "@/lib/data";
 import { putArtifactBlob } from "@/lib/blob";
 
+function formatBytes(b: number) {
+  if (b < 1024) return `${b} B`;
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+  return `${(b / (1024 * 1024)).toFixed(2)} MB`;
+}
+
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -34,6 +40,13 @@ export async function POST(req: Request) {
   if (!title || !content) return NextResponse.json({ error: "title and content required" }, { status: 400 });
   if (!["html", "md", "pdf"].includes(type)) return NextResponse.json({ error: "invalid type" }, { status: 400 });
 
+  const bytes = Buffer.byteLength(content, "utf-8");
+  const { getStorageUsage, LIMIT_BYTES } = await import("@/lib/data");
+  const usage = await getStorageUsage(user.id);
+  if (!usage.unlimited && usage.used + bytes > LIMIT_BYTES) {
+    return NextResponse.json({ error: `Storage limit exceeded: ${formatBytes(usage.used)} / 40 MB used` }, { status: 413 });
+  }
+
   const id = crypto.randomUUID();
   // All docs go to blob regardless of size
   const { key, url: blobUrl } = await putArtifactBlob(id, content, type);
@@ -47,6 +60,7 @@ export async function POST(req: Request) {
     description: String(description).slice(0, 500),
     blobKey: key,
     blobUrl,
+    sizeBytes: bytes,
   });
 
   return NextResponse.json({ ok: true, id, url: `/a/${id}`, blobUrl }, { status: 201 });
