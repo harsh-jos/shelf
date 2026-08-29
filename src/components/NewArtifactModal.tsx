@@ -1,9 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export default function NewArtifactModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [copied, setCopied] = useState<string | null>(null);
-  if (!open) return null;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!open || !mounted) return null;
 
   const shelfUrl = typeof window !== "undefined" ? window.location.origin : "https://shelf.vercel.app";
   const mcpUrl = `${shelfUrl}/api/mcp`;
@@ -23,8 +26,8 @@ export default function NewArtifactModal({ open, onClose }: { open: boolean; onC
     setTimeout(() => setCopied(null), 1500);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+  const modal = (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full max-w-[560px] rounded-[20px] bg-white border border-[var(--border)] shadow-[0_24px_64px_rgba(0,0,0,0.18)] flex flex-col max-h-[min(85vh,calc(100vh-2rem))] overflow-hidden my-auto">
         <div className="shrink-0 px-6 py-4 border-b border-[var(--border)] flex items-center justify-between">
@@ -81,4 +84,6 @@ export default function NewArtifactModal({ open, onClose }: { open: boolean; onC
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }
